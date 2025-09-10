@@ -1,7 +1,11 @@
+# Triển khai Hadoop và Spark trên Docker
+
 ## 1. Chuẩn bị file cấu hình (Xem thêm tại [Phụ lục](#5-phụ-lục))
+
 Đảm bảo bạn đã có đầy đủ các thư mục và file cấu hình như trong cấu trúc dưới đây. Nếu chưa, hãy thêm/tạo chúng.
 > Lưu ý: Tên file `slaves` có thể thay thế bằng `workers` tùy theo phiên bản Hadoop. Trong ví dụ này, chúng ta sử dụng cả hai để đảm bảo tương thích.
-```
+
+```plaintext
 .
 ├── Dockerfile
 ├── docker-compose.yml
@@ -33,6 +37,7 @@ Mở terminal tại thư mục chứa file `docker-compose.yml` và chạy lện
 ```bash
 docker-compose up --build -d
 ```
+
 - `--build`: Lệnh này sẽ build lại image từ `Dockerfile` nếu có thay đổi.
 - `-d`: Chạy các container ở chế độ nền (detached mode).
 
@@ -47,6 +52,7 @@ Bạn sẽ thấy `hadoop-master`, `hadoop-slave1`, `hadoop-slave2` và `hadoop-
 ## 3. Khởi chạy các dịch vụ Hadoop và Spark
 
 ### 3.1. Truy cập container master
+
 Sử dụng lệnh sau để truy cập vào terminal của `hadoop-master`:
 
 ```bash
@@ -54,6 +60,7 @@ docker exec -it hadoop-master bash
 ```
 
 ### 3.2: Format HDFS namenode
+
 Chỉ thực hiện lệnh này **lần đầu tiên** khi khởi tạo cụm.
 
 ```bash
@@ -61,6 +68,7 @@ hdfs namenode -format
 ```
 
 ### 3.3: Khởi chạy Hadoop
+
 Dùng các script có sẵn để khởi chạy HDFS và YARN.
 
 ```bash
@@ -79,6 +87,7 @@ Hadoop: [http://hadoop-master:9870](http://localhost:9870) \
 Yarn: [http://hadoop-master:8088](http://localhost:8088)
 
 ### 3.4: Khởi chạy Spark
+
 Cấu hình Spark Master và Workers để chúng có thể tìm thấy nhau.
 
 **Tạo file** `spark-env.sh` tại `./configs/spark/spark-env.sh` nếu chưa có. File này giúp các workers biết **Master** ở đâu.
@@ -113,6 +122,7 @@ start-worker.sh spark://hadoop-master:7077
 ```
 
 ## 4. Kiểm tra và vận hành
+
 **Kiểm tra các tiến trình Java:** Dùng lệnh `jps` trong terminal của master và slaves để xem các tiến trình `NameNode`, `DataNode`, `ResourceManager`, `NodeManager`, `Master` và `Worker` đã chạy chưa.
 
 > Giao diện web: \
@@ -123,14 +133,17 @@ Spark Master UI: [http://localhost:18080](http://localhost:18080)
 Trên trang Spark UI, bạn sẽ thấy danh sách các workers đang hoạt động.
 
 ## 5. Phụ lục
-### 5.1. Download files:
+
+### 5.1. Download files
+
 > Hadoop: [hadoop-3.4.0.tar.gz](https://dlcdn.apache.org/hadoop/common/hadoop-3.4.0/hadoop-3.4.0.tar.gz) | [backup_url](https://media.githubusercontent.com/media/kamedev02/hadoop-spark-docker-setup-big-data/refs/heads/main/files/hadoop-3.4.0.tar.gz?download=true) \
 Spark: [spark-3.4.3-bin-hadoop3.tgz](https://archive.apache.org/dist/spark/spark-3.4.3/spark-3.4.3-bin-hadoop3.tgz) | [backup_url](https://media.githubusercontent.com/media/kamedev02/hadoop-spark-docker-setup-big-data/refs/heads/main/files/spark-3.4.3-bin-hadoop3.tgz?download=true) \
 Zookeeper: [apache-zookeeper-3.8.4-bin.tar.gz](https://dlcdn.apache.org/zookeeper/zookeeper-3.8.4/apache-zookeeper-3.8.4-bin.tar.gz)
 
 ### 5.2. Nội dung các file cấu hình
 
-#### `/configs/hadoop/core-site.xml` 
+#### `/configs/hadoop/core-site.xml`
+
 ```xml
 <?xml version="1.0"?>
 <configuration>
@@ -149,7 +162,8 @@ Zookeeper: [apache-zookeeper-3.8.4-bin.tar.gz](https://dlcdn.apache.org/zookeepe
 </configuration>
 ```
 
-#### `/configs/hadoop/hdfs-site.xml` 
+#### `/configs/hadoop/hdfs-site.xml`
+
 ```xml
 <?xml version="1.0"?>
 <configuration>
@@ -170,7 +184,8 @@ Zookeeper: [apache-zookeeper-3.8.4-bin.tar.gz](https://dlcdn.apache.org/zookeepe
 </configuration>
 ```
 
-#### `/configs/hadoop/yarn-site.xml` 
+#### `/configs/hadoop/yarn-site.xml`
+
 ```xml
 <?xml version="1.0"?>
 <configuration>
@@ -205,7 +220,8 @@ Zookeeper: [apache-zookeeper-3.8.4-bin.tar.gz](https://dlcdn.apache.org/zookeepe
 </configuration>
 ```
 
-#### `/configs/hadoop/hadoop-env.sh` 
+#### `/configs/hadoop/hadoop-env.sh`
+
 ```sh
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 export HADOOP_CONF_DIR=${HADOOP_CONF_DIR:-"/etc/hadoop"}
@@ -225,6 +241,7 @@ export HADOOP_NICENESS=0
 ```
 
 #### `/configs/hadoop/slaves`
+
 ```plaintext
 hadoop-slave1
 hadoop-slave2
@@ -232,14 +249,17 @@ hadoop-slave3
 ```
 
 #### `/configs/hadoop/workers`
+
 ```plaintext
 hadoop-slave1
 hadoop-slave2
 hadoop-slave3
 ```
+
 > Đối với file slaves và workers thì cần ngắt dòng *LF (Line Feed)* thay vì *CRLF (Carriage Return + Line Feed)*
 
 #### `/configs/spark/spark-defaults.conf`
+
 ```conf
 spark.master                    spark://hadoop-master:7077
 spark.eventLog.enabled          true
@@ -248,14 +268,17 @@ spark.history.fs.logDirectory   /usr/local/spark/spark-events
 ```
 
 #### `/configs/spark/spark-ha.conf`
+
 ```conf
 spark.deploy.recoveryMode=ZOOKEEPER
 spark.deploy.zookeeper.url=hadoop-master:2181
 spark.deploy.zookeeper.dir=/spark
 ```
+
 > Nếu `spark.deploy.zookeeper.dir=/spark` gây lỗi thì thay bằng `spark.deploy.zookeeper.dir=/usr/local/zookeeper/dataDir`.
 
 #### `/configs/spark/spark-ha.sh`
+
 ```sh
 #!/usr/bin/env bash
 export SPARK_HOME=/usr/local/spark
@@ -268,6 +291,7 @@ export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop
 ```
 
 #### `/configs/zookeeper/zoo.cfg`
+
 ```cfg
 tickTime=2000
 initLimit=10
