@@ -1,0 +1,2 @@
+/files/hadoop-3.4.0.tar.gz filter=lfs diff=lfs merge=lfs -text
+/files/spark-3.4.3-bin-hadoop3.tgz filter=lfs diff=lfs merge=lfs -text

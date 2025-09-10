@@ -1,0 +1,102 @@
+version: "3"
+services:
+  hadoop-master:
+    build: .
+    container_name: hadoop-master
+    hostname: hadoop-master
+    ports:
+      - "9870:9870"   # HDFS NameNode UI
+      - "8088:8088"   # YARN UI
+      - "2181:2181"   # ZooKeeper
+      - "7077:7077"   # Spark Master
+      - "18080:18080" # Spark Master UI
+    networks:
+      hadoop-net:
+        ipv4_address: 172.18.0.2
+    volumes:
+      - ./configs/hadoop/core-site.xml:/usr/local/hadoop/etc/hadoop/core-site.xml
+      - ./configs/hadoop/hdfs-site.xml:/usr/local/hadoop/etc/hadoop/hdfs-site.xml
+      - ./configs/hadoop/yarn-site.xml:/usr/local/hadoop/etc/hadoop/yarn-site.xml
+      - ./configs/hadoop/hadoop-env.sh:/usr/local/hadoop/etc/hadoop/hadoop-env.sh
+      - ./configs/hadoop/workers:/usr/local/hadoop/etc/hadoop/workers
+      - ./configs/hadoop/slaves:/usr/local/hadoop/etc/hadoop/slaves
+      - ./configs/spark/spark-env.sh:/usr/local/spark/conf/spark-env.sh
+      - ./configs/spark/spark-defaults.conf:/usr/local/spark/conf/spark-defaults.conf
+      - ./configs/spark/spark-ha.conf:/usr/local/spark/conf/spark-ha.conf
+    tty: true
+
+  hadoop-slave1:
+    build: .
+    container_name: hadoop-slave1
+    hostname: hadoop-slave1
+    ports:
+      - "9864:9864"   # DataNode WebUI
+      - "8042:8042"   # NodeManager WebUI
+    networks:
+      hadoop-net:
+        ipv4_address: 172.18.0.3
+    volumes:
+      - ./configs/hadoop/core-site.xml:/usr/local/hadoop/etc/hadoop/core-site.xml
+      - ./configs/hadoop/hdfs-site.xml:/usr/local/hadoop/etc/hadoop/hdfs-site.xml
+      - ./configs/hadoop/yarn-site.xml:/usr/local/hadoop/etc/hadoop/yarn-site.xml
+      - ./configs/hadoop/hadoop-env.sh:/usr/local/hadoop/etc/hadoop/hadoop-env.sh
+      - ./configs/hadoop/workers:/usr/local/hadoop/etc/hadoop/workers
+      - ./configs/hadoop/slaves:/usr/local/hadoop/etc/hadoop/slaves
+      - ./configs/spark/spark-env.sh:/usr/local/spark/conf/spark-env.sh
+      - ./configs/spark/spark-defaults.conf:/usr/local/spark/conf/spark-defaults.conf
+    tty: true
+    depends_on:
+      - hadoop-master
+
+  hadoop-slave2:
+    build: .
+    container_name: hadoop-slave2
+    hostname: hadoop-slave2
+    ports:
+      - "9865:9864"   # DataNode WebUI
+      - "8043:8042"   # NodeManager WebUI
+    networks:
+      hadoop-net:
+        ipv4_address: 172.18.0.4
+    volumes:
+      - ./configs/hadoop/core-site.xml:/usr/local/hadoop/etc/hadoop/core-site.xml
+      - ./configs/hadoop/hdfs-site.xml:/usr/local/hadoop/etc/hadoop/hdfs-site.xml
+      - ./configs/hadoop/yarn-site.xml:/usr/local/hadoop/etc/hadoop/yarn-site.xml
+      - ./configs/hadoop/hadoop-env.sh:/usr/local/hadoop/etc/hadoop/hadoop-env.sh
+      - ./configs/hadoop/workers:/usr/local/hadoop/etc/hadoop/workers
+      - ./configs/hadoop/slaves:/usr/local/hadoop/etc/hadoop/slaves
+      - ./configs/spark/spark-env.sh:/usr/local/spark/conf/spark-env.sh
+      - ./configs/spark/spark-defaults.conf:/usr/local/spark/conf/spark-defaults.conf
+    tty: true
+    depends_on:
+      - hadoop-master
+
+  hadoop-slave3:
+    build: .
+    container_name: hadoop-slave3
+    hostname: hadoop-slave3
+    ports:
+      - "9866:9864"   # DataNode WebUI
+      - "8044:8042"   # NodeManager WebUI
+    networks:
+      hadoop-net:
+        ipv4_address: 172.18.0.5
+    volumes:
+      - ./configs/hadoop/core-site.xml:/usr/local/hadoop/etc/hadoop/core-site.xml
+      - ./configs/hadoop/hdfs-site.xml:/usr/local/hadoop/etc/hadoop/hdfs-site.xml
+      - ./configs/hadoop/yarn-site.xml:/usr/local/hadoop/etc/hadoop/yarn-site.xml
+      - ./configs/hadoop/hadoop-env.sh:/usr/local/hadoop/etc/hadoop/hadoop-env.sh
+      - ./configs/hadoop/workers:/usr/local/hadoop/etc/hadoop/workers
+      - ./configs/hadoop/slaves:/usr/local/hadoop/etc/hadoop/slaves
+      - ./configs/spark/spark-env.sh:/usr/local/spark/conf/spark-env.sh
+      - ./configs/spark/spark-defaults.conf:/usr/local/spark/conf/spark-defaults.conf
+    tty: true
+    depends_on:
+      - hadoop-master
+
+networks:
+  hadoop-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
