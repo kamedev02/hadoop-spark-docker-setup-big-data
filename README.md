@@ -1,4 +1,4 @@
-## 1. Chuẩn bị file cấu hình (Xem thêm tại [Phụ lục](#5-phu-luc))
+## 1. Chuẩn bị file cấu hình (Xem thêm tại [Phụ lục](#5-phụ-lục))
 Đảm bảo bạn đã có đầy đủ các thư mục và file cấu hình như trong cấu trúc dưới đây. Nếu chưa, hãy thêm/tạo chúng.
 > Lưu ý: Tên file `slaves` có thể thay thế bằng `workers` tùy theo phiên bản Hadoop. Trong ví dụ này, chúng ta sử dụng cả hai để đảm bảo tương thích.
 
