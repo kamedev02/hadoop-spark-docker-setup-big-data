@@ -3,7 +3,6 @@
 ## 1. Chuẩn bị file cấu hình (Xem thêm tại [Phụ lục](#5-phụ-lục))
 
 Đảm bảo bạn đã có đầy đủ các thư mục và file cấu hình như trong cấu trúc dưới đây. Nếu chưa, hãy thêm/tạo chúng.
-> Lưu ý: Tên file `slaves` có thể thay thế bằng `workers` tùy theo phiên bản Hadoop. Trong ví dụ này, chúng ta sử dụng cả hai để đảm bảo tương thích.
 
 ```plaintext
 .
@@ -29,6 +28,11 @@
     ├── hadoop-3.4.0.tar.gz
     └── spark-3.4.3-bin-hadoop3.tgz
 ```
+
+> Lưu ý:
+>
+> 1. Repo này sử dụng Git LFS (Large File Storage) để quản lý các file cài đặt Hadoop, Spark và Zookeeper có dung lượng lớn. Nếu bạn chỉ dùng lệnh `git clone` thông thường, bạn sẽ chỉ tải về các con trỏ file (pointer files) thay vì các file thực tế. Điều này sẽ khiến quá trình build Docker thất bại. (chi tiết tại [5.1. Download files](#51-download-files))
+> 2. Tên file `slaves` có thể thay thế bằng `workers` tùy theo phiên bản Hadoop. Trong ví dụ này, chúng ta sử dụng cả hai để đảm bảo tương thích.
 
 ## 2. Build và khởi chạy
 
@@ -136,9 +140,53 @@ Trên trang Spark UI, bạn sẽ thấy danh sách các workers đang hoạt đ�
 
 ### 5.1. Download files
 
-> Hadoop: [hadoop-3.4.0.tar.gz](https://dlcdn.apache.org/hadoop/common/hadoop-3.4.0/hadoop-3.4.0.tar.gz) | [backup_url](https://media.githubusercontent.com/media/kamedev02/hadoop-spark-docker-setup-big-data/refs/heads/main/files/hadoop-3.4.0.tar.gz?download=true) \
+Để tải các file lớn một cách chính xác, bạn cần đảm bảo đã cài đặt và kích hoạt Git LFS.
+
+#### 5.1.1. Cài đặt Git LFS
+
+1. Cài đặt [Git LFS](https://git-lfs.com):
+
+   - Đối với macOS (Homebrew): `brew install git-lfs`
+   - Đối với Linux (Debian/Ubuntu): `sudo apt-get install git-lfs`
+   - Đối với Windows: Tải từ trang chủ hoặc dùng `choco install git-lfs`.
+
+2. Kích hoạt Git LFS:
+
+    ```bash
+    git lfs install
+    ```
+
+    > Lệnh này chỉ cần chạy một lần duy nhất.
+
+#### 5.1.2. Tải files
+
+1. Clone repo:
+
+    ```bash
+    git clone https://github.com/kamedev02/hadoop-spark-docker-setup-big-data.git
+    ```
+
+2. Vào thư mục repo vừa clone:
+
+    ```bash
+    cd hadoop-spark-docker-setup-big-data
+    ```
+
+3. Tải các file lớn:
+
+    ```bash
+    git lfs pull
+    ```
+
+    > Sau khi chạy lệnh này, các file trong thư mục files sẽ được tải về đầy đủ.
+
+#### 5.1.3. Download trực tiếp từ url
+
+Hadoop: [hadoop-3.4.0.tar.gz](https://dlcdn.apache.org/hadoop/common/hadoop-3.4.0/hadoop-3.4.0.tar.gz) | [backup_url](https://media.githubusercontent.com/media/kamedev02/hadoop-spark-docker-setup-big-data/refs/heads/main/files/hadoop-3.4.0.tar.gz?download=true) \
 Spark: [spark-3.4.3-bin-hadoop3.tgz](https://archive.apache.org/dist/spark/spark-3.4.3/spark-3.4.3-bin-hadoop3.tgz) | [backup_url](https://media.githubusercontent.com/media/kamedev02/hadoop-spark-docker-setup-big-data/refs/heads/main/files/spark-3.4.3-bin-hadoop3.tgz?download=true) \
 Zookeeper: [apache-zookeeper-3.8.4-bin.tar.gz](https://dlcdn.apache.org/zookeeper/zookeeper-3.8.4/apache-zookeeper-3.8.4-bin.tar.gz)
+
+> backup_url sẽ có tốc độ cao hơn
 
 ### 5.2. Nội dung các file cấu hình
 
